@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:march_cycle_predictor/core/messages.dart';
 import 'package:march_cycle_predictor/core/period_calculation.dart';
 
 part 'period_event.dart';
@@ -40,13 +41,16 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     //I'm using 6 as the maximumDifference,
     //It means that if one of the user's recent cycles is 7 days longer or shorter than her average cycle length, she should consult a doctor
     String? error = PeriodCalculation.datesError(chosenDates, averageCycle, 6);
+    final outputDates = PeriodCalculation.calculate(chosenDates, event.averageCycle);
     if (error == null) {
-      final output = PeriodCalculation.calculate(chosenDates, event.averageCycle);
-      print(output);
+       emit(CalculationDoneState(
+        isWarning: false,
+        result: Messages.resultMessage(outputDates),
+      ));
     } else {
       emit(CalculationDoneState(
         isWarning: true,
-        result: error,
+        result:  '$error\n\n${Messages.resultMessage(outputDates)}',
       ));
     }
   }

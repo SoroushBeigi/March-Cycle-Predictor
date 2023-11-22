@@ -1,4 +1,4 @@
-import 'package:march_cycle_predictor/core/constants.dart';
+import 'package:march_cycle_predictor/core/messages.dart';
 
 class PeriodCalculation {
   static List<DateTime> calculate(
@@ -42,7 +42,7 @@ class PeriodCalculation {
 
       final int difference = (cycleLength - averageLength).abs();
       if (difference > maximumDifference) {
-        return Constants.cycleLengthWarning(difference);
+        return Messages.cycleLengthWarning(difference);
       }
     }
     return null;
