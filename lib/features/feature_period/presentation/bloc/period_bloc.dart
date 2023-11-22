@@ -35,7 +35,7 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     }
 
 //Sorting the list to avoid negative durations later
-    chosenDates.sort();
+    
 
     //I'm using 6 as the maximumDifference,
     //It means that if one of the user's recent cycles is 7 days longer or shorter than her average cycle length, she should consult a doctor

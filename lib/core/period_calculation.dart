@@ -3,6 +3,7 @@ import 'package:march_cycle_predictor/core/constants.dart';
 class PeriodCalculation {
   static List<DateTime> calculate(
       List<DateTime> lastCycles, int averageLength) {
+    lastCycles.sort();
     List<Duration> cycleDurations = [];
     //We are starting from second element to calculate the length between dates
     for (int i = 1; i < lastCycles.length; i++) {
@@ -15,7 +16,7 @@ class PeriodCalculation {
     //We calculate the weighted averageof the last cycles.
     //The weights should be determined by testing with real-world data
     final weightedAverage = calculateWeightedAverage(
-        cycleLengths.map((e) => e.toDouble()).toList(), [1, 1.8]);
+        cycleLengths.map((e) => e.toDouble()).toList(), [1, 5.2]);
 
     //In my experiments, involving the user's average length resulted in an output closer to real-world data.
     final calculatedAverage = (weightedAverage + averageLength) / 2;
@@ -24,13 +25,14 @@ class PeriodCalculation {
         lastCycles.last.add(Duration(days: roundedAverage));
     List<DateTime> outputList = [firstNextDate];
     for (int i = 1; i < lastCycles.length; i++) {
-      outputList.add(outputList[i-1].add(Duration(days: roundedAverage)));
+      outputList.add(outputList[i - 1].add(Duration(days: roundedAverage)));
     }
     return outputList;
   }
 
   static String? datesError(
       List<DateTime> chosenDates, int averageLength, maximumDifference) {
+    chosenDates.sort();
     for (int i = 0; i < chosenDates.length - 1; i++) {
       DateTime current = chosenDates[i];
       DateTime next = chosenDates[i + 1];
