@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class WarningDialog extends StatelessWidget {
+class ResultDialog extends StatelessWidget {
   final bool isWarning;
   final String result;
 
-  const WarningDialog({
+  const ResultDialog({
     required this.isWarning,
     required this.result,
     super.key,

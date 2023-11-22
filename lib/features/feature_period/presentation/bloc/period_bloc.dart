@@ -8,7 +8,7 @@ part 'period_state.dart';
 
 class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
   List<DateTime> chosenDates = [];
-  int averageLength = 0;
+  int averageInputLength = 0;
   PeriodBloc() : super(PeriodInitial()) {
     on<AddDateEvent>(_addDate);
     on<DeleteDateEvent>(_deleteDate);
@@ -37,10 +37,12 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
 //Sorting the list to avoid negative durations later
     chosenDates.sort();
 
-    //I'm using 5 as the maximumDifference,
-    //It means that if one of the user's recent cycles is 5 days longer or shorter than her average cycle length, she should consult a doctor
-    String? error = PeriodCalculation.datesError(chosenDates, averageCycle, 5);
+    //I'm using 6 as the maximumDifference,
+    //It means that if one of the user's recent cycles is 7 days longer or shorter than her average cycle length, she should consult a doctor
+    String? error = PeriodCalculation.datesError(chosenDates, averageCycle, 6);
     if (error == null) {
+      final output = PeriodCalculation.calculate(chosenDates, event.averageCycle);
+      print(output);
     } else {
       emit(CalculationDoneState(
         isWarning: true,
@@ -51,7 +53,7 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
 
   void _validateTextfield(
       TextFieldChangedEvent event, Emitter<PeriodState> emit) {
-    averageLength = event.value.length;
+    averageInputLength = event.value.length;
     emit(InputChangedState());
   }
 }

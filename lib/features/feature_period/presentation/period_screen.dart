@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'package:march_cycle_predictor/features/feature_period/presentation/bloc/period_bloc.dart';
 import 'package:march_cycle_predictor/features/feature_period/presentation/widgets/chosen_date.dart';
-import 'package:march_cycle_predictor/features/feature_period/presentation/widgets/warning_dialog.dart';
+import 'package:march_cycle_predictor/features/feature_period/presentation/widgets/result_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PeriodScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class _PeriodScreenState extends State<PeriodScreen> {
               if (state is CalculationDoneState) {
                 showDialog(
                     context: context,
-                    builder: (context) => WarningDialog(
+                    builder: (context) => ResultDialog(
                           isWarning: state.isWarning,
                           result: state.result,
                         ));
@@ -124,7 +124,7 @@ class _PeriodScreenState extends State<PeriodScreen> {
                       ),
                     ),
                     ElevatedButton(
-                        onPressed: bloc.chosenDates.length == 3 && bloc.averageLength==2
+                        onPressed: bloc.chosenDates.length == 3 && bloc.averageInputLength==2
                             ? () => bloc.add(CalculateCyclesEvent(
                                 averageCycle: int.parse(_controller.text)))
                             : null,
