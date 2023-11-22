@@ -8,21 +8,26 @@ part 'period_event.dart';
 part 'period_state.dart';
 
 class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
-
-  List<DateTime> chosenDates=[];
+  List<DateTime> chosenDates = [];
 
   PeriodBloc() : super(PeriodInitial()) {
     on<AddDateEvent>(_addDate);
     on<DeleteDateEvent>(_deleteDate);
+    on<CalculateCyclesEvent>(_calculate);
   }
 
-  Future<void> _addDate(AddDateEvent event, Emitter<PeriodState> emit)async {
+  void _addDate(AddDateEvent event, Emitter<PeriodState> emit) {
     chosenDates.add(event.date);
-    emit(ChosenDatesChangedState(dates:chosenDates));
+    emit(ChosenDatesChangedState(dates: chosenDates));
   }
 
   void _deleteDate(DeleteDateEvent event, Emitter<PeriodState> emit) {
     chosenDates.removeAt(event.index);
-    emit(ChosenDatesChangedState(dates:chosenDates));
+    emit(ChosenDatesChangedState(dates: chosenDates));
   }
+
+  void _calculate(
+      CalculateCyclesEvent event, Emitter<PeriodState> emit)  {
+        
+      }
 }

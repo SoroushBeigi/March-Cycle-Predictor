@@ -14,65 +14,114 @@ class PeriodScreen extends StatefulWidget {
 }
 
 class _PeriodScreenState extends State<PeriodScreen> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<PeriodBloc>(context);
+    final textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          title: const Text(
-            'March Cycle Predictor',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
+          title: Text('March Cycle Predictor',
+              style: textTheme
+                  .headlineLarge!
+                  .copyWith(color: Colors.white)),
           backgroundColor: Colors.teal,
         ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: pickDate,
-                child: const Text('Pick a date'),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              BlocBuilder<PeriodBloc, PeriodState>(
-                buildWhen: (previous, current) =>
-                    current is ChosenDatesChangedState,
-                builder: (context, state) {
-                  return SizedBox(
-                    height: 25.h,
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state is ChosenDatesChangedState
-                          ? state.dates.length
-                          : 0,
-                      itemBuilder: (context, index) {
-                        return Center(
-                          child: ChosenDate(
-                            index: index,
-                            date: DateFormat.yMMMMd().format(
-                              (state as ChosenDatesChangedState).dates[index],
-                            ),
-                          ),
-                        );
-                      },
+          child: BlocBuilder<PeriodBloc, PeriodState>(
+            buildWhen: (previous, current) =>
+                current is ChosenDatesChangedState,
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '1) Enter your average cycle length:',
+                      style:textTheme.bodyMedium,
                     ),
-                  );
-                },
-              )
-            ],
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 10,
+                      ),
+                      width: 20.w,
+                      child: TextField(
+                        style: textTheme.bodyLarge,
+                        textAlign: TextAlign.center,
+                        controller: _controller,
+                        keyboardType: const TextInputType.numberWithOptions(
+                        ),
+                        
+                        decoration:  InputDecoration(
+                         
+                          counterText: '',
+                            filled: true,
+                            fillColor: Colors.white,
+                            hintStyle: textTheme.bodyMedium!.copyWith(color: Colors.grey),
+                            hintText: 'e.g. 28'),
+                        maxLength: 2,
+                        
+                      ),
+                    ),
+                    Text(
+                      '2) Choose your last three cycles start dates:',
+                      style: textTheme.bodyMedium,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: ()=>pickDate(bloc),
+                      child: const Text('Pick a date'),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      height: 25.h,
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state is ChosenDatesChangedState
+                            ? state.dates.length
+                            : 0,
+                        itemBuilder: (context, index) {
+                          return Center(
+                            child: ChosenDate(
+                              index: index,
+                              date: DateFormat.yMMMMd().format(
+                                (state as ChosenDatesChangedState).dates[index],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    ElevatedButton(
+                        onPressed: bloc.chosenDates.length ==3
+                            ? ()=>bloc.add(CalculateCyclesEvent(averageCycle: int.parse(_controller.text)))
+                            : null,
+                        child: const Text('Calculate Next Cycles'))
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  pickDate() async {
-
-    if (BlocProvider.of<PeriodBloc>(context).chosenDates.length > 2) {
+  pickDate(PeriodBloc bloc) async {
+    if (bloc.chosenDates.length > 2) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Please choose 3 dates only'),
         duration: Duration(seconds: 1),
@@ -93,9 +142,11 @@ class _PeriodScreenState extends State<PeriodScreen> {
         }
       } else {
         if (mounted) {
-          BlocProvider.of<PeriodBloc>(context).add(AddDateEvent(date: date));
+          bloc.add(AddDateEvent(date: date));
         }
       }
     }
   }
+
+
 }
