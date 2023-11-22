@@ -130,8 +130,8 @@ class _PeriodScreenState extends State<PeriodScreen> {
       final date = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now().subtract(const Duration(days: 150)),
-        lastDate: DateTime.now().add(const Duration(days: 150)),
+        firstDate: DateTime.now().subtract(const Duration(days: 100)),
+        lastDate: DateTime.now(),
       );
       if (date == null) {
         if (mounted) {
