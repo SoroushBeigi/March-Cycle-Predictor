@@ -15,13 +15,21 @@ class ResultDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return AlertDialog(
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('OK'),
+        ),
+      ],
       title: Text(
         isWarning ? 'Warning!' : 'Result',
         style: textTheme.bodyLarge!
             .copyWith(color: isWarning ? Colors.orange[700] : Colors.teal[700]),
       ),
       content: Container(
-        padding: EdgeInsets.only(bottom: 2.h),
+        padding: EdgeInsets.zero,
         width: 75.w,
         child: Text(
           result,

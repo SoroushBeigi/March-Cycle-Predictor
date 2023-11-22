@@ -22,3 +22,5 @@ class TextFieldChangedEvent extends PeriodEvent{
   final String value;
   TextFieldChangedEvent({required this.value});
 }
+
+class ResetEvent extends PeriodEvent{}

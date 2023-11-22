@@ -60,4 +60,5 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     averageInputLength = event.value.length;
     emit(InputChangedState());
   }
+
 }
