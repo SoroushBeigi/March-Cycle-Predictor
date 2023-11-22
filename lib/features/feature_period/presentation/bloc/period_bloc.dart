@@ -9,7 +9,10 @@ part 'period_state.dart';
 
 class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
   List<DateTime> chosenDates = [];
+
+  //Used to enable the button only when the input is acceptable
   int averageInputLength = 0;
+
   PeriodBloc() : super(PeriodInitial()) {
     on<AddDateEvent>(_addDate);
     on<DeleteDateEvent>(_deleteDate);
@@ -17,11 +20,13 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     on<TextFieldChangedEvent>(_validateTextfield);
   }
 
+  //Used for adding a date and showing its card on the screen
   void _addDate(AddDateEvent event, Emitter<PeriodState> emit) {
     chosenDates.add(event.date);
     emit(InputChangedState());
   }
 
+  //Used for removing a date and removing its card from the screen
   void _deleteDate(DeleteDateEvent event, Emitter<PeriodState> emit) {
     chosenDates.removeAt(event.index);
     emit(InputChangedState());
@@ -35,22 +40,20 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
       return;
     }
 
-//Sorting the list to avoid negative durations later
-    
-
     //I'm using 6 as the maximumDifference,
     //It means that if one of the user's recent cycles is 7 days longer or shorter than her average cycle length, she should consult a doctor
     String? error = PeriodCalculation.datesError(chosenDates, averageCycle, 6);
-    final outputDates = PeriodCalculation.calculate(chosenDates, event.averageCycle);
+    final outputDates =
+        PeriodCalculation.calculate(chosenDates, event.averageCycle);
     if (error == null) {
-       emit(CalculationDoneState(
+      emit(CalculationDoneState(
         isWarning: false,
         result: Messages.resultMessage(outputDates),
       ));
     } else {
       emit(CalculationDoneState(
         isWarning: true,
-        result:  '$error\n\n${Messages.resultMessage(outputDates)}',
+        result: '$error\n\n${Messages.resultMessage(outputDates)}',
       ));
     }
   }
@@ -60,5 +63,4 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     averageInputLength = event.value.length;
     emit(InputChangedState());
   }
-
 }

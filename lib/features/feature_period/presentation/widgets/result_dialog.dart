@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+//We show the result (3 future cycle start dates and warnings, if there is any) in this widget.
 class ResultDialog extends StatelessWidget {
   final bool isWarning;
   final String result;

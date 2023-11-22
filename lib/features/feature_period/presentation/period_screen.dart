@@ -38,6 +38,8 @@ class _PeriodScreenState extends State<PeriodScreen> {
         ),
         body: Center(
           child: BlocConsumer<PeriodBloc, PeriodState>(
+
+            //Listens for state changes to show error message or the finished result
             listener: (BuildContext context, PeriodState state) {
               if (state is OutOfRangeLengthState) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -139,7 +141,10 @@ class _PeriodScreenState extends State<PeriodScreen> {
     );
   }
 
+  //This function is used to pick dates by using flutter's built-in date picker. 
+  //A snackbar is shown if the user does not choose any date (taps the cancel button)
   pickDate(PeriodBloc bloc) async {
+    //The user has to pick 3 dates
     if (bloc.chosenDates.length > 2) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Please choose 3 dates only'),
