@@ -5,8 +5,16 @@ sealed class PeriodState {}
 
 final class PeriodInitial extends PeriodState {}
 
-final class ChosenDatesChangedState extends PeriodState{
-  final List<DateTime> dates;
+final class OutOfRangeLengthState extends PeriodState {}
 
-  ChosenDatesChangedState({required this.dates});
+final class InputChangedState extends PeriodState {
+  // final int? averageLength;
+  // final List<DateTime> dates;
+  // InputChangedState({required this.averageLength,required this.dates});
+}
+
+final class CalculationDoneState extends PeriodState {
+  final bool isWarning;
+  final String result;
+  CalculationDoneState({required this.isWarning, required this.result});
 }

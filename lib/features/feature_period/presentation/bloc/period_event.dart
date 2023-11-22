@@ -17,3 +17,8 @@ class CalculateCyclesEvent extends PeriodEvent {
   final int averageCycle;
   CalculateCyclesEvent({required this.averageCycle});
 }
+
+class TextFieldChangedEvent extends PeriodEvent{
+  final String value;
+  TextFieldChangedEvent({required this.value});
+}

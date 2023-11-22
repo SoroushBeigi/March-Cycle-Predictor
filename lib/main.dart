@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:march_cycle_predictor/app.dart';
-import 'package:march_cycle_predictor/injections.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 Future<void> ensureInitializedApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setup();
+  // await setup();
   //Implement any initialization before running the app.
 }
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:march_cycle_predictor/features/feature_period/presentation/bloc/period_bloc.dart';
 import 'package:march_cycle_predictor/features/feature_period/presentation/widgets/chosen_date.dart';
+import 'package:march_cycle_predictor/features/feature_period/presentation/widgets/warning_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PeriodScreen extends StatefulWidget {
@@ -31,15 +33,29 @@ class _PeriodScreenState extends State<PeriodScreen> {
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
           title: Text('March Cycle Predictor',
-              style: textTheme
-                  .headlineLarge!
-                  .copyWith(color: Colors.white)),
+              style: textTheme.headlineLarge!.copyWith(color: Colors.white)),
           backgroundColor: Colors.teal,
         ),
         body: Center(
-          child: BlocBuilder<PeriodBloc, PeriodState>(
+          child: BlocConsumer<PeriodBloc, PeriodState>(
+            listener: (BuildContext context, PeriodState state) {
+              if (state is OutOfRangeLengthState) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Average cycle length is usually between 21 and 35 days.'),
+                  duration: Duration(seconds: 2),
+                ));
+              }
+              if (state is CalculationDoneState) {
+                showDialog(
+                    context: context,
+                    builder: (context) => WarningDialog(
+                          isWarning: state.isWarning,
+                          result: state.result,
+                        ));
+              }
+            },
             buildWhen: (previous, current) =>
-                current is ChosenDatesChangedState,
+                current is InputChangedState || current is PeriodInitial || current is OutOfRangeLengthState,
             builder: (context, state) {
               return SingleChildScrollView(
                 child: Column(
@@ -47,7 +63,7 @@ class _PeriodScreenState extends State<PeriodScreen> {
                   children: [
                     Text(
                       '1) Enter your average cycle length:',
-                      style:textTheme.bodyMedium,
+                      style: textTheme.bodyMedium,
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(
@@ -55,21 +71,22 @@ class _PeriodScreenState extends State<PeriodScreen> {
                       ),
                       width: 20.w,
                       child: TextField(
+                        onChanged: (value) => bloc.add(TextFieldChangedEvent(value: value)),
                         style: textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                         controller: _controller,
-                        keyboardType: const TextInputType.numberWithOptions(
-                        ),
-                        
-                        decoration:  InputDecoration(
-                         
-                          counterText: '',
+                        keyboardType: const TextInputType.numberWithOptions(),
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: InputDecoration(
+                            counterText: '',
                             filled: true,
                             fillColor: Colors.white,
-                            hintStyle: textTheme.bodyMedium!.copyWith(color: Colors.grey),
+                            hintStyle: textTheme.bodyMedium!
+                                .copyWith(color: Colors.grey),
                             hintText: 'e.g. 28'),
                         maxLength: 2,
-                        
                       ),
                     ),
                     Text(
@@ -81,7 +98,7 @@ class _PeriodScreenState extends State<PeriodScreen> {
                       height: 20,
                     ),
                     ElevatedButton(
-                      onPressed: ()=>pickDate(bloc),
+                      onPressed: () => pickDate(bloc),
                       child: const Text('Pick a date'),
                     ),
                     const SizedBox(
@@ -91,15 +108,15 @@ class _PeriodScreenState extends State<PeriodScreen> {
                       height: 25.h,
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state is ChosenDatesChangedState
-                            ? state.dates.length
-                            : 0,
+                        itemCount: state is PeriodInitial
+                            ? 0
+                            : bloc.chosenDates.length,
                         itemBuilder: (context, index) {
                           return Center(
                             child: ChosenDate(
                               index: index,
                               date: DateFormat.yMMMMd().format(
-                                (state as ChosenDatesChangedState).dates[index],
+                                bloc.chosenDates[index],
                               ),
                             ),
                           );
@@ -107,8 +124,9 @@ class _PeriodScreenState extends State<PeriodScreen> {
                       ),
                     ),
                     ElevatedButton(
-                        onPressed: bloc.chosenDates.length ==3
-                            ? ()=>bloc.add(CalculateCyclesEvent(averageCycle: int.parse(_controller.text)))
+                        onPressed: bloc.chosenDates.length == 3 && bloc.averageLength==2
+                            ? () => bloc.add(CalculateCyclesEvent(
+                                averageCycle: int.parse(_controller.text)))
                             : null,
                         child: const Text('Calculate Next Cycles'))
                   ],
@@ -148,6 +166,4 @@ class _PeriodScreenState extends State<PeriodScreen> {
       }
     }
   }
-
-
 }
