@@ -26,8 +26,23 @@ class PeriodBloc extends Bloc<PeriodEvent, PeriodState> {
     emit(ChosenDatesChangedState(dates: chosenDates));
   }
 
-  void _calculate(
-      CalculateCyclesEvent event, Emitter<PeriodState> emit)  {
-        
-      }
+  void _calculate(CalculateCyclesEvent event, Emitter<PeriodState> emit) {
+    //Validating the given dates before doing the calculations
+    for (int i = 0; i < chosenDates.length - 1; i++) {
+      DateTime current = chosenDates[i];
+      DateTime next = chosenDates[i + 1];
+
+      //Sorting the list to avoid negative durations later
+      chosenDates.sort();
+
+      // Calculate the difference in days between current and next
+      int dayDifference = next.difference(current).inDays;
+
+      // Check if the day difference is within the desired range
+      if (dayDifference < 23 || dayDifference > 35) {
+        //Error
+      } 
+    }
+    //Do the calculations here
+  }
 }

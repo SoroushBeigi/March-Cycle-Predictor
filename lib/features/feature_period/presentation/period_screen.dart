@@ -74,6 +74,7 @@ class _PeriodScreenState extends State<PeriodScreen> {
                     ),
                     Text(
                       '2) Choose your last three cycles start dates:',
+                      textAlign: TextAlign.center,
                       style: textTheme.bodyMedium,
                     ),
                     const SizedBox(
