@@ -2,10 +2,12 @@
 
 This project is created as a task for [March](https://march.health/)
 ## Description
-This was quite a small project, however I used clean architecture and tried to create a scalable and reliable app using the right architecture and BLoC state management. for example, I tried to write the codes as dynamic as I can so the algorithms will work for more than 3 cycle inputs as well.
+This was quite a small project, however I used clean architecture and tried to create a scalable and reliable app using the right architecture and BLoC state management. 
+For example, I tried to write the codes as dynamic as I can so the algorithms will work for more than 3 cycle inputs as well.
 Another case is naming classes, for example I named the only Bloc class PeriodClass and created a whole feature folder for the app's only page, assuming it is a part of a greater project to implement the correct structure.
 
-It is clear that writing an algorithm to predict the menstrual cycles precisely is almost impossible and there are many different real-world factors that are not implemented in this project. but I tried to reach the optimal outcome using the limited data.
+It is clear that writing an algorithm to predict the menstrual cycles precisely is almost impossible and will require huge datasets and ML algorithms.
+There are many different real-world factors that are not implemented in this project. but I tried to reach the optimal outcome using the limited data.
 
 ## Questions
 1)At first, I tried to calculate an average of last cycles by using the start dates of each cycle, but using weighted average seemed like a better solution. I used higher weight for more recent cycles.
